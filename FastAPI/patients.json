@@ -1,0 +1,121 @@
+{
+  "P001": {
+    "id": "P001",
+    "name": "Ananya Sharma",
+    "city": "Guwahati",
+    "age": 28,
+    "gender": "female",
+    "height": 1.65,
+    "weight": 90.0,
+    "bmi": 33.06,
+    "verdict": "Obese"
+  },
+
+  "P002": {
+    "id": "P002",
+    "name": "Ravi Mehta",
+    "city": "Mumbai",
+    "age": 35,
+    "gender": "male",
+    "height": 1.75,
+    "weight": 85.0,
+    "bmi": 27.76,
+    "verdict": "Overweight"
+  },
+
+  "P003": {
+    "id": "P003",
+    "name": "Priya Nanda",
+    "city": "Delhi",
+    "age": 24,
+    "gender": "female",
+    "height": 1.60,
+    "weight": 54.0,
+    "bmi": 21.09,
+    "verdict": "Normal"
+  },
+
+  "P004": {
+    "id": "P004",
+    "name": "Suresh Patil",
+    "city": "Pune",
+    "age": 42,
+    "gender": "male",
+    "height": 1.72,
+    "weight": 102.0,
+    "bmi": 34.45,
+    "verdict": "Obese"
+  },
+
+  "P005": {
+    "id": "P005",
+    "name": "Meera Joshi",
+    "city": "Chennai",
+    "age": 31,
+    "gender": "female",
+    "height": 1.68,
+    "weight": 76.0,
+    "bmi": 26.93,
+    "verdict": "Overweight"
+  },
+
+  "P006": {
+    "id": "P006",
+    "name": "Amit Verma",
+    "city": "Jaipur",
+    "age": 29,
+    "gender": "male",
+    "height": 1.80,
+    "weight": 72.0,
+    "bmi": 22.22,
+    "verdict": "Normal"
+  },
+
+  "P007": {
+    "id": "P007",
+    "name": "Sonal Jain",
+    "city": "Indore",
+    "age": 27,
+    "gender": "female",
+    "height": 1.55,
+    "weight": 42.0,
+    "bmi": 17.48,
+    "verdict": "Underweight"
+  },
+
+  "P008": {
+    "id": "P008",
+    "name": "Rahul Desai",
+    "city": "Ahmedabad",
+    "age": 39,
+    "gender": "male",
+    "height": 1.70,
+    "weight": 95.0,
+    "bmi": 32.87,
+    "verdict": "Obese"
+  },
+
+  "P009": {
+    "id": "P009",
+    "name": "Kiran Bhat",
+    "city": "Bengaluru",
+    "age": 33,
+    "gender": "female",
+    "height": 1.62,
+    "weight": 68.0,
+    "bmi": 25.90,
+    "verdict": "Overweight"
+  },
+
+  "P010": {
+    "id": "P010",
+    "name": "Vikram Singh",
+    "city": "Hyderabad",
+    "age": 45,
+    "gender": "male",
+    "height": 1.78,
+    "weight": 80.0,
+    "bmi": 25.25,
+    "verdict": "Overweight"
+  }
+}
