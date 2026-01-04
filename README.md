@@ -43,6 +43,35 @@ The goal is to **learn fast by building**, experimenting with real-world pattern
 - Model versioning & inference patterns
 
 ---
+## 👨‍🏫 What I Learned
+
+### 🔹 LangChain
+
+1. **Models**  
+   Models are the core interface used to interact with AI systems (LLMs, chat models, embeddings).  
+   They take input text and generate responses or vector representations.
+
+2. **Prompts**  
+   Prompts define how input is structured and sent to the model.  
+   They help control output format, behavior, and reasoning style.
+
+3. **Chains**  
+   Chains connect multiple steps together, such as prompt → model → output processing.  
+   They enable building structured and reusable AI workflows.
+
+4. **Memory**  
+   Memory allows models to remember previous interactions.  
+   It helps maintain context in conversations and multi-step reasoning tasks.
+
+5. **Indexes**  
+   Indexes organize external data (documents, files, embeddings) for efficient retrieval.  
+   They are commonly used in Retrieval-Augmented Generation (RAG) systems.
+
+6. **Agents**  
+   Agents decide which actions or tools to use based on user input.  
+   They enable dynamic reasoning, tool calling, and multi-step decision making.
+
+---
 
 ## 📂 Repository Structure
 
