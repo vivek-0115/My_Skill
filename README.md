@@ -5,6 +5,13 @@ The goal is to **learn fast by building**, experimenting with real-world pattern
 
 ---
 
+# ✨ AiCraft
+- ### This **website** is a showcase of my hands-on experience and continuous learning in Machine Learning, Deep Learning, and Generative AI.
+
+- ### It features real-world projects, experiments, and implementations using modern AI tools and frameworks, reflecting my practical understanding and growth as an AI engineer.
+
+---
+
 ## 🧠 What This Repository Is About
 
 - Learning **cutting-edge backend and AI technologies**
@@ -77,6 +84,8 @@ The goal is to **learn fast by building**, experimenting with real-world pattern
 
 ```text
 ├── .venv/
+|
+├── AiCraft/
 |
 ├── FastAPI/
 |
