@@ -7,15 +7,10 @@
     </p>
 
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <router-link
-        v-for="topic in topics"
-        :key="topic.slug"
-        :to="`/langchain/${topic.slug}`"
-        class="p-6 rounded-lg border
+      <router-link v-for="topic in topics" :key="topic.slug" :to="`/langchain/${topic.slug}`" class="p-6 rounded-lg border
                border-gray-200 dark:border-gray-700
                bg-white dark:bg-gray-900
-               hover:shadow-lg transition"
-      >
+               hover:shadow-lg transition">
         <h3 class="text-lg font-semibold mb-2">
           {{ topic.title }}
         </h3>
@@ -36,9 +31,9 @@ const topics = [
     desc: 'Creating reusable and dynamic prompts using LangChain.'
   },
   {
-    title: 'Chains',
-    slug: 'chains',
-    desc: 'Combining multiple LLM calls into structured workflows.'
+    title: 'Feedback Response Generator',
+    slug: 'feedback-response-generator',
+    desc: 'Generates clear, constructive, and context-aware responses to user feedback.'
   },
   {
     title: 'Retrieval Augmented Generation (RAG)',

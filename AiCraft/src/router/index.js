@@ -5,7 +5,7 @@ import MLProjects from '../views/MLProjects.vue'
 import DLProjects from '../views/DLProjects.vue'
 import LangChain from '../views/LangChain.vue'
 import Prompt from '../views/langchain/Prompt.vue'
-import Chains from '../views/langchain/Chains.vue'
+import FeedbackResponse from '../views/langchain/FeedbackResponse.vue'
 import Rag from '../views/langchain/Rag.vue'
 import Projects from '../views/Projects.vue'
 import About from '../views/About.vue'
@@ -16,7 +16,7 @@ const routes = [
   { path: '/dl-projects', name: 'DLProjects', component: DLProjects },
   { path: '/langchain', name: 'LangChain', component: LangChain },
   { path: '/langchain/prompt', name: 'Prompt', component: Prompt },
-  { path: '/langchain/chains', name: 'Chains', component: Chains },
+  { path: '/langchain/feedback-response-generator', name: 'FeedbackResponse', component: FeedbackResponse },
   { path: '/langchain/rag', name: 'Rag', component: Rag },
   { path: '/projects', name: 'Projects', component: Projects },
   { path: '/about', name: 'About', component: About }

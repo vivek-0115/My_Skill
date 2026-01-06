@@ -1,29 +1,45 @@
 <template>
-  <section class="">
-    <div class="border-b border-gray-200 dark:border-gray-700">
-      <nav class="flex items-center  justify-between py-6 container mx-auto">
-        <!-- Left -->
-        <div class="flex gap-4 text-gray-700 dark:text-gray-200 font-medium text-lg">
-          <router-link class="nav-link" to="/">Home</router-link>
-          <router-link class="nav-link" to="/ml-projects">ML Projects</router-link>
-          <router-link class="nav-link" to="/dl-projects">DL Projects</router-link>
-          <router-link class="nav-link" to="/langchain">LangChain</router-link>
-          <router-link class="nav-link" to="/projects">Projects</router-link>
-          <router-link class="nav-link" to="/about">About</router-link>
-        </div>
+  <section class="min-h-screen bg-white dark:bg-gray-900">
+    <!-- Navbar -->
+    <header class="border-b border-gray-200 dark:border-gray-700">
+      <div class="container mx-auto flex items-center justify-between">
+        <!-- Brand -->
+        <router-link to="/" class="flex items-center gap-3 group">
+          <!-- Logo -->
+          <img src=".././public/2728.svg" alt="AiCraft Logo" class="h-9 w-9 group-hover:scale-105 transition" />
 
-        <!-- Right -->
-        <ThemeToggle />
-      </nav>
-    </div>
+          <!-- Name -->
+          <span class="text-2xl font-bold tracking-tight dark:text-orange-400 text-orange-500">
+            AiCraft
+          </span>
+        </router-link>
 
-    <router-view />
+        <!-- Navigation -->
+        <nav class="flex items-center gap-8">
+          <!-- Links -->
+          <div class="hidden md:flex items-center gap-6 text-gray-700 dark:text-gray-200 font-medium">
+            
+            <router-link to="/" class="nav-link">Home</router-link>
+            <router-link to="/ml-projects" class="nav-link">ML Projects</router-link>
+            <router-link to="/dl-projects" class="nav-link">DL Projects</router-link>
+            <router-link to="/langchain" class="nav-link">LangChain</router-link>
+            <router-link to="/projects" class="nav-link">Projects</router-link>
+            <router-link to="/about" class="nav-link">About</router-link>
+          </div>
+
+          <!-- Right Action -->
+          <ThemeToggle />
+        </nav>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main>
+      <router-view />
+    </main>
   </section>
 </template>
 
 <script setup>
-import ThemeToggle from './components/ThemeToggle.vue'
-import router from './router';
+import ThemeToggle from "./components/ThemeToggle.vue"
 </script>
-
-<style scoped></style>

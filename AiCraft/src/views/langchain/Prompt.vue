@@ -1,6 +1,9 @@
 <script setup>
 import { ref, computed } from "vue"
 import { marked } from "marked"
+import { useAppConfigStore } from "../../stores/appConfig"
+
+const configStore = useAppConfigStore()
 
 // UI state
 const paper = ref("")
@@ -25,7 +28,7 @@ const summarize = async () => {
     result.value = ""
 
     try {
-        const res = await fetch("http://127.0.0.1:8000/prompt", {
+        const res = await fetch(`${configStore.baseApiUrl}/prompt`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
