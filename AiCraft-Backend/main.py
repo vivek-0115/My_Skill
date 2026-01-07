@@ -23,6 +23,9 @@ app.include_router(prompt_router)
 from FeedBackResGen import router as feedback_router
 app.include_router(feedback_router)
 
+from univerManageApi import router as univer_manage_router
+app.include_router(univer_manage_router)
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the AiCraft Backend System!"}

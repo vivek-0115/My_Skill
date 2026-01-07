@@ -11,5 +11,5 @@
 }
 
 .nav-link{
-  @apply px-1 py-4 border-b-1 border-b-transparent hover:border-b-orange-300 hover:text-orange-300 transition 
+  @apply px-1 py-4  hover:text-orange-300 transition 
 }

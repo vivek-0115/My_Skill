@@ -23,6 +23,7 @@
             <router-link to="/ml-projects" class="nav-link">ML Projects</router-link>
             <router-link to="/dl-projects" class="nav-link">DL Projects</router-link>
             <router-link to="/langchain" class="nav-link">LangChain</router-link>
+            <router-link to="/fastapi" class="nav-link">FastAPI</router-link>
             <router-link to="/projects" class="nav-link">Projects</router-link>
             <router-link to="/about" class="nav-link">About</router-link>
           </div>
