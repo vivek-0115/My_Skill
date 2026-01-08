@@ -1,0 +1,11 @@
+farmer_id,name,age,village,district,state,crop,land_acres
+1,Ramesh Kumar,45,Rampur,Varanasi,Uttar Pradesh,Wheat,3.5
+2,Suresh Patel,52,Nandgaon,Anand,Gujarat,Cotton,5.2
+3,Amit Singh,38,Kheda,Lucknow,Uttar Pradesh,Rice,2.8
+4,Mahesh Yadav,41,Sultanpur,Jaunpur,Uttar Pradesh,Sugarcane,4.0
+5,Raju Verma,47,Baragaon,Agra,Uttar Pradesh,Mustard,3.0
+6,Sunil Mehta,50,Bhavani,Nashik,Maharashtra,Onion,6.5
+7,Anil Sharma,36,Alipur,Meerut,Uttar Pradesh,Potato,2.5
+8,Vikas Chauhan,44,Chandpur,Bijnor,Uttar Pradesh,Wheat,3.8
+9,Pankaj Mishra,39,Sonapur,Gaya,Bihar,Maize,4.5
+10,Deepak Joshi,48,Lakshmipur,Alwar,Rajasthan,Barley,5.0
