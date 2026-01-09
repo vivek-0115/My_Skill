@@ -5,3 +5,5 @@ node_modules
 *.Ds_store
 *__pycache__/
 *.pyc
+*.sqlite3
+*.bin
