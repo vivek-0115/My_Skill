@@ -35,5 +35,10 @@ const topics = [
     slug: 'university-management',
     desc: 'Designing REST APIs for students, courses, instructors, and enrollments using FastAPI.'
   },
+  {
+    title: "Server-Sent Events Tester",
+    slug: "sse-testing",
+    desc: "A debugging page for validating SSE streams, progress updates, and connection behavior."
+  },
 ]
 </script>

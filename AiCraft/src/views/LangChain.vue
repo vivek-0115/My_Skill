@@ -18,6 +18,10 @@
         <p class="text-sm text-gray-600 dark:text-gray-400">
           {{ topic.desc }}
         </p>
+
+        <span class="inline-block mt-4 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+          {{ topic.tech }}
+        </span>
       </router-link>
     </div>
   </section>
@@ -28,17 +32,20 @@ const topics = [
   {
     title: 'Prompt Templates',
     slug: 'prompt',
-    desc: 'Creating reusable and dynamic prompts using LangChain.'
+    desc: 'Creating reusable and dynamic prompts using LangChain.',
+    tech: 'LangChain · Prompt Templates · LLM'
   },
   {
     title: 'Feedback Response Generator',
     slug: 'feedback-response-generator',
-    desc: 'Generates clear, constructive, and context-aware responses to user feedback.'
+    desc: 'Generates clear, constructive, and context-aware responses to user feedback.',
+    tech: 'LangChain · Runnables · Chains · LLM'
   },
   {
-    title: 'Retrieval Augmented Generation (RAG)',
-    slug: 'rag',
-    desc: 'Enhancing LLM responses using external knowledge sources.'
+    title: 'WeatherSense AI',
+    slug: 'weatherSense-ai',
+    desc: 'AI agent combining weather APIs and web search for forecasts and alerts.',
+    tech: 'LangChain · Tool Calling · Weather API · Web Search · LLM'
   }
 ]
 </script>

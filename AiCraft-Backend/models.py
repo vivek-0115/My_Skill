@@ -1,11 +1,14 @@
 from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_community.utilities import GoogleSerperAPIWrapper
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # Define Gemini model
 Gemini = ChatGoogleGenerativeAI(model='gemini-2.5-flash')
+GeminiLite = ChatGoogleGenerativeAI(model='gemini-2.5-flash-lite')
+GeminiLite2 = ChatGoogleGenerativeAI(model='gemini-2.0-flash-lite')
 
 
 # Define Mistral model
@@ -28,3 +31,6 @@ MiniMax_LLM = HuggingFaceEndpoint(
 
 # Create ChatHuggingFace instance for MiniMax
 MiniMax = ChatHuggingFace(llm=MiniMax_LLM)
+
+# Creating SerpAPI, for browsing and search on web
+SerperSearch = GoogleSerperAPIWrapper()
