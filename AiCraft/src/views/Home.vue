@@ -1,6 +1,5 @@
 <template>
-  <section
-    class="container mx-auto pt-8 text-gray-800 dark:text-gray-200">
+  <section class="container mx-auto pt-8 text-gray-800 dark:text-gray-200">
     <h1 class="text-4xl font-bold">
       Hi, I'm Vivek 👋
     </h1>
@@ -14,27 +13,6 @@
       learning in ML, DL, and GenAI using tools like PyTorch, LangChain,
       and modern LLM-based systems.
     </p>
-
-    <div class="mt-10 flex gap-4">
-      <router-link
-        to="/projects"
-        class="px-5 py-2 rounded-md bg-emerald-500
-               text-white font-medium
-               hover:bg-emerald-600 transition"
-      >
-        View Projects
-      </router-link>
-
-      <router-link
-        to="/about"
-        class="px-5 py-2 rounded-md border
-               border-emerald-500 text-emerald-500
-               hover:bg-emerald-50 dark:hover:bg-gray-800
-               transition"
-      >
-        About Me
-      </router-link>
-    </div>
   </section>
 </template>
 

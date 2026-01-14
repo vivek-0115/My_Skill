@@ -110,8 +110,14 @@ const askAgent = async () => {
       }
     }
 
-    evtSource.addEventListener("done", () => {
+    evtSource.addEventListener("done", (e) => {
       loading.value = false
+      let data = JSON.parse(e.data)
+      update.value = data.message
+
+      if (data.content) {
+        response.value = data.content
+      }
       evtSource.close()
     })
 

@@ -18,11 +18,11 @@
         <nav class="flex items-center gap-8">
           <!-- Links -->
           <div class="hidden md:flex items-center gap-6 text-gray-700 dark:text-gray-200 font-medium">
-            
             <router-link to="/" class="nav-link">Home</router-link>
             <router-link to="/ml-projects" class="nav-link">ML Projects</router-link>
             <router-link to="/dl-projects" class="nav-link">DL Projects</router-link>
             <router-link to="/langchain" class="nav-link">LangChain</router-link>
+            <router-link to="/langgraph" class="nav-link">LangGraph</router-link>
             <router-link to="/fastapi" class="nav-link">FastAPI</router-link>
             <router-link to="/projects" class="nav-link">Projects</router-link>
             <router-link to="/about" class="nav-link">About</router-link>

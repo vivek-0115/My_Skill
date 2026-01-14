@@ -323,8 +323,8 @@ async def WeatherSenseAiStream(pid: str):
             yield {"data": json.dumps({
                         "message": "Response Generated.",
                         "content": finalResponse
-                    })}
-            await asyncio.sleep(0.1)
+                    }),
+                    "event":"done"}
 
         except Exception as e:
             print("Error in WeatherSense AI Stream for PID", pid, ":", str(e))

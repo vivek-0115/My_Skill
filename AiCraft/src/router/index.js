@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import MLProjects from '../views/MLProjects.vue'
 import DLProjects from '../views/DLProjects.vue'
 import LangChain from '../views/LangChain.vue'
+import LangGraph from '../views/LangGraph.vue'
 import Prompt from '../views/langchain/Prompt.vue'
 import FeedbackResponse from '../views/langchain/FeedbackResponse.vue'
 import WeatherSense from '../views/langchain/WeatherSenseAi.vue'
@@ -18,6 +19,7 @@ const routes = [
   { path: '/ml-projects', name: 'MLProjects', component: MLProjects },
   { path: '/dl-projects', name: 'DLProjects', component: DLProjects },
   { path: '/langchain', name: 'LangChain', component: LangChain },
+  { path: '/langgraph', name: 'LangGraph', component: LangGraph },
   { path: '/langchain/prompt', name: 'Prompt', component: Prompt },
   { path: '/langchain/feedback-response-generator', name: 'FeedbackResponse', component: FeedbackResponse },
   { path: '/langchain/weatherSense-ai', name: 'WeatherSense', component: WeatherSense },
