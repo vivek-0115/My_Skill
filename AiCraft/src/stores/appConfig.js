@@ -7,12 +7,14 @@ export const useAppConfigStore = defineStore("appConfig", () => {
   const baseApiUrl = ref(`${baseUrl.value}/api`)
   const baseUniverManageApiUrl = ref(`${baseApiUrl.value}/university-management`)
   const weatherSenseAi = ref(`${baseApiUrl.value}/weatherSense-ai`)
+  const chatbotFlow = ref(`${baseApiUrl.value}/chatbot-flow`)
 
   return {
     baseUrl,
     baseApiUrl,
     baseUniverManageApiUrl,
     weatherSenseAi,
+    chatbotFlow,
   }
 })
 

@@ -11,6 +11,7 @@ import WeatherSense from '../views/langchain/WeatherSenseAi.vue'
 import FastAPI from '../views/FastAPI.vue'
 import UniverManage from '../views/fastapi/UniverManage.vue'
 import SSETesting from '../views/fastapi/SSETesting.vue'
+import ChatbotFlow from '../views/langgraph/ChatbotFlow.vue'
 import Projects from '../views/Projects.vue'
 import About from '../views/About.vue'
 
@@ -26,6 +27,7 @@ const routes = [
   { path: '/fastapi', name: 'FastAPI', component: FastAPI },
   { path: '/fastapi/university-management', name: 'UniverManage', component: UniverManage },
   { path: '/fastapi/sse-testing', name: 'SSETesting', component: SSETesting },
+  { path: '/langgraph/chatbot-flow', name: 'ChatbotFlow', component: ChatbotFlow },
   { path: '/projects', name: 'Projects', component: Projects },
   { path: '/about', name: 'About', component: About }
 ]

@@ -36,6 +36,9 @@ app.include_router(univer_manage_router)
 from WeatherSenseAi import router as weather_sense_ai
 app.include_router(weather_sense_ai)
 
+from ChatbotFlow import router as chatbot_flow
+app.include_router(chatbot_flow)
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the AiCraft Backend System!"}

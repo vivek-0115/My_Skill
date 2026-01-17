@@ -1,7 +1,7 @@
 <template>
-  <section class="min-h-screen bg-white dark:bg-gray-900">
+  <section class="bg-white dark:bg-gray-900">
     <!-- Navbar -->
-    <header class="border-b border-gray-200 dark:border-gray-700">
+    <header class="border-b border-gray-200 dark:border-gray-700 h-[7vh]">
       <div class="container mx-auto flex items-center justify-between">
         <!-- Brand -->
         <router-link to="/" class="flex items-center gap-3 group">
@@ -35,7 +35,7 @@
     </header>
 
     <!-- Page Content -->
-    <main>
+    <main class="h-[93vh]">
       <router-view />
     </main>
   </section>

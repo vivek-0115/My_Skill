@@ -35,22 +35,10 @@
 <script setup>
 const topics = [
   {
-    title: 'Graph Nodes & Edges',
-    slug: 'graph-nodes-edges',
-    desc: 'Defining nodes, edges, and state flow in LangGraph.',
-    tech: 'LangGraph · Nodes · Edges · State'
+    title: 'Chatbot Flow',
+    slug: 'chatbot-flow',
+    desc: 'Designing chatbot workflows using nodes, edges, and shared conversation state in LangGraph.',
+    tech: 'LangGraph · Persistance · Conversation State'
   },
-  {
-    title: 'Multi-Agent Workflows',
-    slug: 'multi-agent-workflows',
-    desc: 'Building coordinated multi-agent systems using LangGraph.',
-    tech: 'LangGraph · Agents · State Graph · LLM'
-  },
-  {
-    title: 'Conditional Routing',
-    slug: 'conditional-routing',
-    desc: 'Routing execution paths dynamically based on state and logic.',
-    tech: 'LangGraph · Conditional Edges · Control Flow · LLM'
-  }
 ]
 </script>
