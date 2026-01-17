@@ -8,3 +8,6 @@ node_modules
 *.sqlite3
 *.bin
 *.pdf
+*.db
+*.db-shm
+*.db-wal

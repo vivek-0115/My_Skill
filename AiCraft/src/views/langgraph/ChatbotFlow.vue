@@ -103,12 +103,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import { PaperAirplaneIcon } from "@heroicons/vue/24/solid"
 import { useAppConfigStore } from "../../stores/appConfig"
 import ChatLoading from "../../components/ChatLoading.vue"
 
 const configStore = useAppConfigStore()
+const route = useRoute()
+const router = useRouter()
 
 const message = ref("")
 const chat = ref([])
@@ -118,7 +121,6 @@ const hasError = ref(false)
 const sendMessage = async () => {
     if (!message.value.trim()) return
 
-    // Reset states
     hasError.value = false
     isLoading.value = true
 
@@ -162,7 +164,6 @@ const sendMessage = async () => {
     }
 }
 
-
 const modelGroups = [
     {
         name: "Gemini",
@@ -173,8 +174,8 @@ const modelGroups = [
         models: ["gpt-4o", "gpt-4-turbo"]
     },
     {
-        name: "LLaMA",
-        models: ["llama-3-8b", "llama-3-70b"]
+        name: "HuggingFace",
+        models: ["Mistral-7B-Instruct-v0.2", "Llama-3.1-8B-Instruct", "gpt-oss-120b", "Qwen3-4B-Instruct-2507", "Kimi-K2-Instruct-0905"]
     }
 ]
 
@@ -189,23 +190,120 @@ const selectModel = (model) => {
     activeModel.value = model
 }
 
-const recentChats = ref([
-    { id: 1, title: "Weather in Patna" },
-])
+const recentChats = ref([])
 
 const activeChatId = ref(1)
 const activeChatTitle = ref("Weather in Patna")
 
-const createNewChat = () => {
-    const id = Date.now()
-    const newChat = { id, title: "New Chat" }
+const createNewChat = async () => {
+  try {
+    const res = await fetch(`${configStore.chatbotFlow}/new-chat`)
+    const result = await res.json()
+
+    if (!result.success) {
+      throw new Error("Failed to create new chat")
+    }
+
+    const newChat = {
+      id: result.thread_id,
+      title: result.title
+    }
+
     recentChats.value.unshift(newChat)
-    activeChatId.value = id
+
+    activeChatId.value = newChat.id
     activeChatTitle.value = newChat.title
+
+    chat.value = []
+
+    router.push({
+      query: { tid: newChat.id }
+    })
+
+  } catch (err) {
+    console.error("New chat error:", err)
+  }
 }
 
-const selectChat = (chat) => {
-    activeChatId.value = chat.id
-    activeChatTitle.value = chat.title
+
+const selectChat = async (chatItem) => {
+    activeChatId.value = chatItem.id
+    activeChatTitle.value = chatItem.title
+
+    router.push({
+        query: {
+            tid: chatItem.id
+        }
+    })
+
+    await getChatMessages(chatItem.id)
 }
+
+const getChatMessages = async (chatId) => {
+    try {
+        const res = await fetch(
+            `${configStore.chatbotFlow}/chat?tid=${chatId}`
+        )
+        const result = await res.json()
+
+        if (!result.success) {
+            throw new Error("Failed to load chat messages")
+        }
+
+        chat.value = result.data.messages
+    } catch (err) {
+        chat.value = []
+        console.error(err)
+    }
+}
+
+
+const getRecentChats = async () => {
+    try {
+        const res = await fetch(`${configStore.chatbotFlow}/recent-chats`)
+        const result = await res.json()
+
+        if (!result.success) {
+            throw new Error("Failed to fetch recent chats")
+        }
+
+        console.log(result.data)
+        recentChats.value = result.data
+
+        // Auto-open latest chat
+        if (recentChats.value.length > 0) {
+            const latestChat = recentChats.value[0]
+
+            activeChatId.value = latestChat.id
+            activeChatTitle.value = latestChat.title
+
+            router.replace({
+                query: {
+                    tid: latestChat.id
+                }
+            })
+
+            await getChatMessages(latestChat.id)
+        }
+
+    } catch (err) {
+        error.value = "Failed to load recent chats"
+        console.error(err)
+    }
+}
+
+onMounted(async () => {
+    await getRecentChats()
+
+    const tidFromUrl = route.query.tid
+    if (tidFromUrl) {
+        const chatItem = recentChats.value.find(c => c.id === tidFromUrl)
+        if (chatItem) {
+            activeChatId.value = chatItem.id
+            activeChatTitle.value = chatItem.title
+            await getChatMessages(chatItem.id)
+        }
+    }
+})
+
 </script>

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing_extensions import Literal, Any, Optional
+from typing_extensions import Literal, List
 
 class UserInput(BaseModel):
     text: str = Field(description="Input text from the user.")
@@ -41,6 +41,11 @@ class LocationName(BaseModel):
 class GetLoactionToolInput(BaseModel):
     location: str = Field(description="Name of the Location or City to get detailed information.")
 
+class NewChatResponse(BaseModel):
+    success: bool
+    tid: str
+    title: str
+    
 class ChatRequest(BaseModel):
     query: str
 
@@ -52,3 +57,15 @@ class ChatResponse(BaseModel):
     success: bool
     message: str
     data: ChatMessage
+
+class ChatItem(BaseModel):
+    id: str
+    title: str
+
+class RecentChatsResponse(BaseModel):
+    success: bool
+    data: List[ChatItem]
+
+class ChatMessagesResponse(BaseModel):
+    success: bool
+    data: dict
