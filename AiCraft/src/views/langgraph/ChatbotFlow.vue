@@ -75,7 +75,7 @@
                             : hasError && msg.content.includes('Failed')
                                 ? 'bg-red-200 text-red-800 rounded-bl-sm'
                                 : 'bg-gray-200 text-gray-800 rounded-bl-sm'">
-                            <ChatLoading v-if="msg.content === '...'" />
+                            <ChatLoading v-if="msg.content === ''" />
                             <span v-else>{{ msg.content }}</span>
                         </div>
                     </div>
@@ -115,54 +115,10 @@ const router = useRouter()
 
 const message = ref("")
 const chat = ref([])
-const isLoading = ref(false)
+const recentChats = ref([])
+const activeChatId = ref('')
+const activeChatTitle = ref("Weather in Patna")
 const hasError = ref(false)
-
-const sendMessage = async () => {
-    if (!message.value.trim()) return
-
-    hasError.value = false
-    isLoading.value = true
-
-    chat.value.push({
-        role: "user",
-        content: message.value
-    })
-
-    const userInput = message.value
-    message.value = ""
-
-    chat.value.push({
-        role: "assistant",
-        content: "..."
-    })
-
-    const assistantIndex = chat.value.length - 1
-
-    try {
-        const res = await fetch(`${configStore.chatbotFlow}/chat`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query: userInput })
-        })
-
-        const result = await res.json()
-
-        if (!result.success) {
-            throw new Error(result.message || "API failed")
-        }
-
-        chat.value[assistantIndex].content = result.data.content
-
-    } catch (err) {
-        hasError.value = true
-        chat.value[assistantIndex].content = "⚠️ Failed to get response from server."
-        console.error(err)
-
-    } finally {
-        isLoading.value = false
-    }
-}
 
 const modelGroups = [
     {
@@ -190,39 +146,34 @@ const selectModel = (model) => {
     activeModel.value = model
 }
 
-const recentChats = ref([])
-
-const activeChatId = ref(1)
-const activeChatTitle = ref("Weather in Patna")
-
 const createNewChat = async () => {
-  try {
-    const res = await fetch(`${configStore.chatbotFlow}/new-chat`)
-    const result = await res.json()
+    try {
+        const res = await fetch(`${configStore.chatbotFlow}/new-chat`)
+        const result = await res.json()
 
-    if (!result.success) {
-      throw new Error("Failed to create new chat")
+        if (!result.success) {
+            throw new Error("Failed to create new chat")
+        }
+
+        const newChat = {
+            id: result.tid,
+            title: result.title
+        }
+
+        recentChats.value.unshift(newChat)
+
+        activeChatId.value = newChat.id
+        activeChatTitle.value = newChat.title
+
+        chat.value = []
+
+        router.push({
+            query: { tid: newChat.id }
+        })
+
+    } catch (err) {
+        console.error("New chat error:", err)
     }
-
-    const newChat = {
-      id: result.thread_id,
-      title: result.title
-    }
-
-    recentChats.value.unshift(newChat)
-
-    activeChatId.value = newChat.id
-    activeChatTitle.value = newChat.title
-
-    chat.value = []
-
-    router.push({
-      query: { tid: newChat.id }
-    })
-
-  } catch (err) {
-    console.error("New chat error:", err)
-  }
 }
 
 
@@ -242,7 +193,7 @@ const selectChat = async (chatItem) => {
 const getChatMessages = async (chatId) => {
     try {
         const res = await fetch(
-            `${configStore.chatbotFlow}/chat?tid=${chatId}`
+            `${configStore.chatbotFlow}/chats?tid=${chatId}`
         )
         const result = await res.json()
 
@@ -267,7 +218,6 @@ const getRecentChats = async () => {
             throw new Error("Failed to fetch recent chats")
         }
 
-        console.log(result.data)
         recentChats.value = result.data
 
         // Auto-open latest chat
@@ -305,5 +255,75 @@ onMounted(async () => {
         }
     }
 })
+
+const startStreaming = (result, assistantIndex) => {
+  try {
+    const { request_id } = result
+ 
+    const es = new EventSource(
+      `${configStore.chatbotFlow}/chat/stream?request_id=${request_id}`
+    )
+
+    console.log("in sse.")
+
+    es.addEventListener("token", (e) => {
+      chat.value[assistantIndex].content += e.data
+      console.log("hii")
+    })
+
+    es.addEventListener("done", (e) => {
+      console.log(e.data)
+      es.close()
+    })
+
+    es.onerror = () => {
+      chat.value[assistantIndex].content = "Streaming error"
+      es.close()
+    }
+
+  } catch (err) {
+    console.error("SSE error:", err)
+  }
+}
+
+
+const sendMessage = async () => {
+    if (!message.value.trim()) return
+
+    hasError.value = false
+
+    chat.value.push({
+        role: "user",
+        content: message.value
+    })
+
+    const userInput = message.value
+    message.value = ""
+
+    chat.value.push({ role: "assistant", content: "" })
+    const assistantIndex = chat.value.length - 1
+
+    try {
+        const res = await fetch(`${configStore.chatbotFlow}/chat/message`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tid: activeChatId.value, query: userInput })
+        })
+
+        const result = await res.json()
+
+        if (!result.success) {
+            throw new Error(result.message || "Sending message failed.")
+        }
+        console.log(result)
+        startStreaming(result, assistantIndex)
+
+    } catch (err) {
+        hasError.value = true
+        chat.value[assistantIndex].content = "Failed to get response from server."
+        console.error(err)
+
+    }
+}
 
 </script>

@@ -47,6 +47,7 @@ class NewChatResponse(BaseModel):
     title: str
     
 class ChatRequest(BaseModel):
+    tid: str
     query: str
 
 class ChatMessage(BaseModel):
@@ -55,8 +56,7 @@ class ChatMessage(BaseModel):
 
 class ChatResponse(BaseModel):
     success: bool
-    message: str
-    data: ChatMessage
+    request_id: str
 
 class ChatItem(BaseModel):
     id: str

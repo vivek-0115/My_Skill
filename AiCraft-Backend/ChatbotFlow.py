@@ -1,11 +1,14 @@
-from fastapi import APIRouter, HTTPException, status, Query
-from models import Gemini, Mistral
 from pydanticClass import ChatRequest, ChatMessage, ChatResponse, RecentChatsResponse, ChatMessagesResponse, ChatItem, NewChatResponse
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from fastapi import APIRouter, HTTPException, status, Query, Request
+from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import StateGraph, START, END
 from typing_extensions import TypedDict, Annotated
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
-from langgraph.checkpoint.sqlite import SqliteSaver
+from langchain_core.messages import AIMessageChunk
+from sse_starlette.sse import EventSourceResponse
 from langgraph.graph import add_messages
+from models import Gemini, Mistral
+import asyncio
 import sqlite3
 import logging
 import uuid
@@ -14,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 conn = sqlite3.connect(database="chatbot.db", check_same_thread=False)
 checkpointer = SqliteSaver(conn=conn)
+CHAT_REQUEST_CACHE = dict()
 
 # Define State
 class ChatState(TypedDict):
@@ -28,8 +32,7 @@ def Chat(state: ChatState):
         response = llmModel.invoke(messages)
         return {"messages": [response]}
     except Exception as e:
-        logger.exception("Error inside Chat node")
-        raise RuntimeError("LLM execution failed") from e
+        print("Error inside Chat node", str(e))
 
 # Build Graph
 chatGraph = StateGraph(ChatState)
@@ -60,7 +63,6 @@ def get_recent_chats():
     ordered_threads = []
     
     for checkpoint in reversed(list(checkpointer.list(None))):
-        print(checkpoint.config['configurable'])
         config = checkpoint.config.get("configurable", {})
         thread_id = config.get("thread_id")
 
@@ -82,7 +84,7 @@ def get_recent_chats():
         ]
     )
 
-@router.get("/chat", response_model=ChatMessagesResponse)
+@router.get("/chats", response_model=ChatMessagesResponse)
 def get_chat_messages(tid: str = Query(...)):
     global threadId
     threadId = tid
@@ -115,43 +117,102 @@ def get_chat_messages(tid: str = Query(...)):
         }
     }
 
+@router.post("/chat/message", response_model=ChatResponse)
+def chat_message(data: ChatRequest):
+    request_id = str(uuid.uuid4())
 
-@router.post("/chat", response_model=ChatResponse)
-def chat(data: ChatRequest):
+    CHAT_REQUEST_CACHE[request_id] = {
+        "tid": data.tid,
+        "query": data.query
+    }
 
-    if not data.query.strip():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Query cannot be empty"
-        )
+    return ChatResponse(success=True, request_id=request_id)
 
-    try:
-        initialState = {"messages": [HumanMessage(content=data.query)]}
+@router.get("/chat/stream")
+async def chat_stream(request_id: str):
+    request_data = CHAT_REQUEST_CACHE.pop(request_id, None)
 
-        CONFIG = {'configurable': {'thread_id': threadId}}
-        finalState = chatWorkflow.invoke(initialState, config=CONFIG)
+    if not request_data:
+        return {"error": "Invalid or expired request_id"}
 
-        assistant_message = finalState["messages"][-1]
+    tid = request_data["tid"]
+    query = request_data["query"]
 
-        return ChatResponse(
-            success=True,
-            message="Response generated successfully",
-            data=ChatMessage(
-                role="assistant",
-                content=assistant_message.content
-            )
-        )
+    async def event_generator():
+        try:
+            initialState = {"messages": [HumanMessage(content=query)]}
 
-    except RuntimeError as e:
-        logger.exception("Chat workflow runtime error")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="AI failed to generate a response"
-        )
+            CONFIG = {"configurable": {"thread_id": tid}}
 
-    except Exception as e:
-        logger.exception("Unexpected chat error")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Unexpected server error"
-        )
+            for messageChunk, metadata in chatWorkflow.stream(initialState, config=CONFIG):
+                print(messageChunk.content)
+                yield {
+                    "event": "token",
+                    "data": messageChunk.content
+                }
+
+            print(CONFIG)
+            
+            # finalState = chatWorkflow.invoke(initialState, config=CONFIG)
+            # assistant_message = finalState["messages"][-1]
+            # print(assistant_message.content)
+
+            # for event,_ in chatWorkflow.stream(initialState, config=CONFIG):
+            #     if event.content:
+            #         logger.log("from Logger:",event.content, event)
+            #         yield {
+            #             "event": "token",
+            #             "data": "getting values"
+            #         }
+
+            #     await asyncio.sleep(0)
+            
+            yield { "event": "done", "data": "" }
+
+        except Exception:
+            logger.exception("Streaming failed")
+            yield { "event": "error", "data": "Streaming failed" }
+
+    return EventSourceResponse(event_generator())
+
+
+
+# @router.post("/chat", response_model=ChatResponse)
+# def chat(data: ChatRequest):
+
+#     if not data.query.strip():
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail="Query cannot be empty"
+#         )
+
+#     try:
+#         initialState = {"messages": [HumanMessage(content=data.query)]}
+
+#         CONFIG = {'configurable': {'thread_id': threadId}}
+#         finalState = chatWorkflow.invoke(initialState, config=CONFIG)
+
+#         assistant_message = finalState["messages"][-1]
+
+#         return ChatResponse(
+#             success=True,
+#             message="Response generated successfully",
+#             data=ChatMessage(
+#                 role="assistant",
+#                 content=assistant_message.content
+#             )
+#         )
+
+#     except RuntimeError as e:
+#         logger.exception("Chat workflow runtime error")
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail="AI failed to generate a response"
+#         )
+
+#     except Exception as e:
+#         logger.exception("Unexpected chat error")
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail="Unexpected server error"
+#         )
