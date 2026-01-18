@@ -79,6 +79,7 @@
                             <span v-else>{{ msg.content }}</span>
                         </div>
                     </div>
+                    <div ref="bottomRef"></div>
                 </div>
 
                 <div class="pb-6 pt-4 flex justify-center">
@@ -103,7 +104,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue"
+import { ref, onMounted, watch, nextTick } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { PaperAirplaneIcon } from "@heroicons/vue/24/solid"
 import { useAppConfigStore } from "../../stores/appConfig"
@@ -119,6 +120,9 @@ const recentChats = ref([])
 const activeChatId = ref('')
 const activeChatTitle = ref("Weather in Patna")
 const hasError = ref(false)
+
+const bottomRef = ref(null)
+const chatContainer = ref(null)
 
 const modelGroups = [
     {
@@ -257,35 +261,40 @@ onMounted(async () => {
 })
 
 const startStreaming = (result, assistantIndex) => {
-  try {
-    const { request_id } = result
- 
-    const es = new EventSource(
-      `${configStore.chatbotFlow}/chat/stream?request_id=${request_id}`
-    )
+    try {
+        const { request_id } = result
 
-    console.log("in sse.")
+        const es = new EventSource(
+            `${configStore.chatbotFlow}/chat/stream?request_id=${request_id}`
+        )
 
-    es.addEventListener("token", (e) => {
-      chat.value[assistantIndex].content += e.data
-      console.log("hii")
-    })
+        console.log("in sse.")
 
-    es.addEventListener("done", (e) => {
-      console.log(e.data)
-      es.close()
-    })
+        es.addEventListener("token", (e) => {
+            chat.value[assistantIndex].content += e.data
+            console.log("hii")
+        })
 
-    es.onerror = () => {
-      chat.value[assistantIndex].content = "Streaming error"
-      es.close()
+        es.addEventListener("token", (e) => {
+            chat.value[assistantIndex].content += e.data
+            scrollToBottom()
+        })
+
+
+        es.addEventListener("done", (e) => {
+            console.log(e.data)
+            es.close()
+        })
+
+        es.onerror = () => {
+            chat.value[assistantIndex].content = "Streaming error"
+            es.close()
+        }
+
+    } catch (err) {
+        console.error("SSE error:", err)
     }
-
-  } catch (err) {
-    console.error("SSE error:", err)
-  }
 }
-
 
 const sendMessage = async () => {
     if (!message.value.trim()) return

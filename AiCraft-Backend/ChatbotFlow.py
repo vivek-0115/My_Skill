@@ -27,10 +27,15 @@ llmModel = Gemini
 
 # Graph Node
 def Chat(state: ChatState):
+    messages = state["messages"]
+    full_content = ""
     try:
-        messages = state["messages"]
-        response = llmModel.invoke(messages)
-        return {"messages": [response]}
+        for chunk in llmModel.stream(messages):
+            if chunk.content:
+                full_content += chunk.content
+                yield {"messages": [AIMessageChunk(content=chunk.content)]}
+
+        yield {"messages": [AIMessage(content=full_content)]}
     except Exception as e:
         print("Error inside Chat node", str(e))
 
@@ -130,89 +135,35 @@ def chat_message(data: ChatRequest):
 
 @router.get("/chat/stream")
 async def chat_stream(request_id: str):
-    request_data = CHAT_REQUEST_CACHE.pop(request_id, None)
 
+    request_data = CHAT_REQUEST_CACHE.pop(request_id, None)
     if not request_data:
-        return {"error": "Invalid or expired request_id"}
+        return {"error": "Invalid request_id"}
 
     tid = request_data["tid"]
     query = request_data["query"]
 
     async def event_generator():
         try:
-            initialState = {"messages": [HumanMessage(content=query)]}
-
             CONFIG = {"configurable": {"thread_id": tid}}
 
-            for messageChunk, metadata in chatWorkflow.stream(initialState, config=CONFIG):
-                print(messageChunk.content)
-                yield {
-                    "event": "token",
-                    "data": messageChunk.content
-                }
+            for message_chunk, metadata in chatWorkflow.stream(
+                {"messages": [HumanMessage(content=query)]},
+                config=CONFIG,
+                stream_mode="messages"   # 🔥 THIS IS THE KEY
+            ):
+                if message_chunk.content:
+                    yield {
+                        "event": "token",
+                        "data": message_chunk.content
+                    }
 
-            print(CONFIG)
-            
-            # finalState = chatWorkflow.invoke(initialState, config=CONFIG)
-            # assistant_message = finalState["messages"][-1]
-            # print(assistant_message.content)
+                await asyncio.sleep(0)
 
-            # for event,_ in chatWorkflow.stream(initialState, config=CONFIG):
-            #     if event.content:
-            #         logger.log("from Logger:",event.content, event)
-            #         yield {
-            #             "event": "token",
-            #             "data": "getting values"
-            #         }
-
-            #     await asyncio.sleep(0)
-            
-            yield { "event": "done", "data": "" }
+            yield {"event": "done", "data": ""}
 
         except Exception:
             logger.exception("Streaming failed")
-            yield { "event": "error", "data": "Streaming failed" }
+            yield {"event": "error", "data": "Streaming failed"}
 
     return EventSourceResponse(event_generator())
-
-
-
-# @router.post("/chat", response_model=ChatResponse)
-# def chat(data: ChatRequest):
-
-#     if not data.query.strip():
-#         raise HTTPException(
-#             status_code=status.HTTP_400_BAD_REQUEST,
-#             detail="Query cannot be empty"
-#         )
-
-#     try:
-#         initialState = {"messages": [HumanMessage(content=data.query)]}
-
-#         CONFIG = {'configurable': {'thread_id': threadId}}
-#         finalState = chatWorkflow.invoke(initialState, config=CONFIG)
-
-#         assistant_message = finalState["messages"][-1]
-
-#         return ChatResponse(
-#             success=True,
-#             message="Response generated successfully",
-#             data=ChatMessage(
-#                 role="assistant",
-#                 content=assistant_message.content
-#             )
-#         )
-
-#     except RuntimeError as e:
-#         logger.exception("Chat workflow runtime error")
-#         raise HTTPException(
-#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#             detail="AI failed to generate a response"
-#         )
-
-#     except Exception as e:
-#         logger.exception("Unexpected chat error")
-#         raise HTTPException(
-#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#             detail="Unexpected server error"
-#         )
