@@ -8,12 +8,17 @@ from langchain_core.messages import AIMessageChunk
 from sse_starlette.sse import EventSourceResponse
 from langgraph.graph import add_messages
 from models import Gemini, Mistral
+from dotenv import load_dotenv
 import asyncio
 import sqlite3
 import logging
 import uuid
+import os
 
 logger = logging.getLogger(__name__)
+load_dotenv()
+
+os.environ['LANGSMITH_PROJECT'] = "Chatbot-Flow"
 
 conn = sqlite3.connect(database="chatbot.db", check_same_thread=False)
 checkpointer = SqliteSaver(conn=conn)
@@ -67,7 +72,7 @@ def get_recent_chats():
     seen_threads = set()
     ordered_threads = []
     
-    for checkpoint in reversed(list(checkpointer.list(None))):
+    for checkpoint in list(checkpointer.list(None)):
         config = checkpoint.config.get("configurable", {})
         thread_id = config.get("thread_id")
 
@@ -145,12 +150,14 @@ async def chat_stream(request_id: str):
 
     async def event_generator():
         try:
-            CONFIG = {"configurable": {"thread_id": tid}}
+            CONFIG = {
+                "configurable": {"thread_id": tid},
+                }
 
             for message_chunk, metadata in chatWorkflow.stream(
                 {"messages": [HumanMessage(content=query)]},
                 config=CONFIG,
-                stream_mode="messages"   # 🔥 THIS IS THE KEY
+                stream_mode="messages"
             ):
                 if message_chunk.content:
                     yield {

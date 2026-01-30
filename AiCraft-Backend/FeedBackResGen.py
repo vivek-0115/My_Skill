@@ -86,7 +86,7 @@ generateResponseChain = getSentimentChain | getResponseChain
 
 @router.post("/feedback-response-generator", response_model=FeedbackResponse)
 def generate_feedback_response(data: FeedbackRequest):
-    print("Received feedback:", data.feedback)
+
     res = generateResponseChain.invoke({
         'feedback': data.feedback
     })

@@ -76,7 +76,7 @@
                                 ? 'bg-red-200 text-red-800 rounded-bl-sm'
                                 : 'bg-gray-200 text-gray-800 rounded-bl-sm'">
                             <ChatLoading v-if="msg.content === ''" />
-                            <span v-else>{{ msg.content }}</span>
+                            <span v-else v-html="renderMarkdown(msg.content)"></span>
                         </div>
                     </div>
                     <div ref="bottomRef"></div>
@@ -109,6 +109,18 @@ import { useRoute, useRouter } from "vue-router"
 import { PaperAirplaneIcon } from "@heroicons/vue/24/solid"
 import { useAppConfigStore } from "../../stores/appConfig"
 import ChatLoading from "../../components/ChatLoading.vue"
+import MarkdownIt from "markdown-it"
+
+const md = new MarkdownIt({
+  html: false,
+  linkify: true,
+  breaks: true
+})
+
+const renderMarkdown = (text) => {
+  return md.render(text || "")
+}
+
 
 const configStore = useAppConfigStore()
 const route = useRoute()
